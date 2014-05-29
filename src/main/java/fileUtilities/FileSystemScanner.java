@@ -19,7 +19,12 @@ import java.util.logging.Logger;
  */
 public class FileSystemScanner {
 
+    //todo the scanner is somehow iterating twice through the filesystem or something else...
+    //which is causing the insertFile method to be called more than necessary
+
+
     private final static Logger LOGGER = Logger.getLogger(FileSystemScanner.class.getName());
+
     JDBCFileDAO jdbc;
 
     private String[] audioExtensions = {"mp3", "ogg", "wma"};

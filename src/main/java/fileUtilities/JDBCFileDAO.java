@@ -14,9 +14,6 @@ import java.util.logging.Logger;
 public class JDBCFileDAO implements FileDAO {
 
 
-    //todo these methods don't already check to see if a record is in the table
-    //this should be addressed
-
     private final static Logger LOGGER = Logger.getLogger(JDBCFileDAO.class.getName());
 
     private Properties prop;
@@ -24,6 +21,7 @@ public class JDBCFileDAO implements FileDAO {
     private Connection conn = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
+
 
     private String databaseUrl;
 
@@ -97,6 +95,8 @@ public class JDBCFileDAO implements FileDAO {
 
         } else {
             LOGGER.warning(file.getName() + " already exists in table");
+
+
         }
 
     }

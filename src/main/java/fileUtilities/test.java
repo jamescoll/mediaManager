@@ -1,8 +1,6 @@
 package fileUtilities;
 
 
-import java.util.ArrayList;
-
 /**
  * Created by James on 28/05/2014.
  */
@@ -23,7 +21,7 @@ public class test {
         FileSystemScanner sfs = new FileSystemScanner();
         sfs.search();
 
-        JDBCFileDAO jd = new JDBCFileDAO();
+       /* JDBCFileDAO jd = new JDBCFileDAO();
         // jd.deleteFileById(8014);
 
 
@@ -47,7 +45,7 @@ public class test {
 
         File file = jd.findByFileId(10000);
 
-        jd.insertFile(file);
+        jd.insertFile(file);*/
 
 
 

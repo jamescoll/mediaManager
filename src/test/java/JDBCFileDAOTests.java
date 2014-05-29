@@ -3,7 +3,6 @@ import fileUtilities.Filetype;
 import fileUtilities.JDBCFileDAO;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 
 import java.io.FileInputStream;
 import java.io.IOException;

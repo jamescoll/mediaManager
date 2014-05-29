@@ -62,9 +62,6 @@ public class JDBCFileDAO implements FileDAO {
         String sql = "INSERT INTO FILES (Filetype, Filename, Filepath) VALUES (?, ?, ?)";
 
 
-
-
-
         try {
 
             conn = DriverManager.getConnection(databaseUrl, prop);
@@ -106,13 +103,12 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setInt(1, folderId);
             resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 file.setId(resultSet.getInt("id"));
                 file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
             }
-
 
 
         } catch (Exception e) {
@@ -134,14 +130,21 @@ public class JDBCFileDAO implements FileDAO {
 
     private Filetype mapIntToFiletype(int filetypeAsInt) {
 
-        switch(filetypeAsInt) {
-            case 0 : return Filetype.AUDIO;
-            case 1 : return Filetype.VIDEO;
-            case 2 : return Filetype.IMAGE;
-            case 3 : return Filetype.SUBTITLE;
-            case 4 : return Filetype.OTHER;
-            case 5 : return Filetype.UNKNOWN;
-            default : return Filetype.UNKNOWN;
+        switch (filetypeAsInt) {
+            case 0:
+                return Filetype.AUDIO;
+            case 1:
+                return Filetype.VIDEO;
+            case 2:
+                return Filetype.IMAGE;
+            case 3:
+                return Filetype.SUBTITLE;
+            case 4:
+                return Filetype.OTHER;
+            case 5:
+                return Filetype.UNKNOWN;
+            default:
+                return Filetype.UNKNOWN;
 
         }
     }

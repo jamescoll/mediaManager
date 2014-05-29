@@ -20,7 +20,7 @@ public class JDBCFileDAO implements FileDAO {
     private ResultSet resultSet = null;
     private String databaseUrl;
 
-    JDBCFileDAO() {
+    public JDBCFileDAO() {
         setParameters();
     }
 
@@ -60,6 +60,9 @@ public class JDBCFileDAO implements FileDAO {
     public void insertFile(File file) {
 
         String sql = "INSERT INTO FILES (Filetype, Filename, Filepath) VALUES (?, ?, ?)";
+
+
+
 
 
         try {
@@ -142,4 +145,6 @@ public class JDBCFileDAO implements FileDAO {
 
         }
     }
+
+
 }

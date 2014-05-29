@@ -149,7 +149,7 @@ public class FileSystemScanner {
         }
 
 
-        return Filetype.NOTFILE;
+        return Filetype.UNKNOWN;
     }
 
 

@@ -1,5 +1,7 @@
 package fileUtilities;
 
+import java.util.ArrayList;
+
 /**
  * The interface for inserting and deleting files and folders from the database
  * <p/>
@@ -10,8 +12,26 @@ public interface FileDAO {
     //this method populates the filesystem class which contains folders and files
     public void insertFile(File file);
 
+    //this method deletes a file from the database
+    public void deleteFile(File file);
+
+    //this method deletes a file by id from the database
+    public void deleteFileById(int id);
+
     //this method allows us to find a file by the db id
     public File findByFileId(int folderId);
+
+    //this method allows us to find files by the filename
+    public ArrayList<File> findByFilename(String fileName);
+
+    //this method allows us to find files by the filename
+    public ArrayList<File> findByFiletype(Filetype fileType);
+
+    //this method allows us to find files by the extension
+    public ArrayList<File> findByExtension(String extension);
+
+    //this method checks if a file is already in the table
+    public boolean fileInTable(File file);
 
 
 }

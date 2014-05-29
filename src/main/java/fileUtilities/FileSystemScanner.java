@@ -21,13 +21,15 @@ public class FileSystemScanner {
 
     private final static Logger LOGGER = Logger.getLogger(FileSystemScanner.class.getName());
     JDBCFileDAO jdbc;
-    //todo expand these lists as other extensions become apparent
-    private String[] ignoreExtensions = {"db", "DS_Store"};
-    private String[] imageExtensions = {"jpg", "jpeg", "gif"};
-    private String[] videoExtensions = {"avi", "mpg"};
-    private String[] subtitleExtensions = {"sub", "srt", "idx"};
-    private String[] audioExtensions = {"mp3", "ogg"};
-    //todo give these variables better names
+
+    private String[] audioExtensions = {"mp3", "ogg", "wma"};
+    private String[] videoExtensions = {"Divx", "Xvid", "rmvb", "ogm", "mkv", "MPEG", "avi", "mpg", "asf", "flv", "mp4", "m4v", "wmv", "mdf", "mpeg", "AVI", "webm", "VOB", "divx"};
+    private String[] imageExtensions = {"jpg", "jpeg", "gif", "JPG", "png"};
+    private String[] subtitleExtensions = {"sub", "srt", "idx", "SRT"};
+    private String[] textExtensions = {"pdf", "txt", "rtf", "nfo"};
+    private String[] isoExtensions = {"bin", "dmg", "ISO", "img"};
+    private String[] ignoreExtensions = {"db", "DS_Store", "ini", "BUP", "IFO", "smi", "mds", "cue", "rar"};
+
     private Path path;
     private int pathLength;
 
@@ -74,8 +76,6 @@ public class FileSystemScanner {
     }
 
 
-    //todo this will ultimately fill an arraylist of files and folders
-    //for now we will just take a file at once and dump it in the db
     public void search() {
 
 
@@ -116,6 +116,8 @@ public class FileSystemScanner {
                 tmpFile.setName(entry.getFileName().toString());
                 tmpFile.setType(getFileType(entry.getFileName().toString()));
                 tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
+                tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
+                tmpFile.setType(getFileType(tmpFile.getExtension()));
                 jdbc.insertFile(tmpFile);
 
 
@@ -126,10 +128,7 @@ public class FileSystemScanner {
 
     }
 
-
-    private Filetype getFileType(String filename) {
-
-
+    private String getFileExtension(String filename) {
         String extension = "";
         int i = filename.lastIndexOf('.');
         int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
@@ -138,18 +137,26 @@ public class FileSystemScanner {
 
 
             extension = filename.substring(i + 1);
+        } else {
+            LOGGER.info("File doesn't seem to have an extension " + filename);
+        }
+
+        return extension;
+    }
+
+
+    private Filetype getFileType(String extension) {
 
             if (Arrays.asList(audioExtensions).contains(extension)) return Filetype.AUDIO;
             else if (Arrays.asList(videoExtensions).contains(extension)) return Filetype.VIDEO;
             else if (Arrays.asList(imageExtensions).contains(extension)) return Filetype.IMAGE;
             else if (Arrays.asList(subtitleExtensions).contains(extension)) return Filetype.SUBTITLE;
-            else return Filetype.OTHER;
+            else if (Arrays.asList(textExtensions).contains(extension)) return Filetype.TEXT;
+            else if (Arrays.asList(isoExtensions).contains(extension)) return Filetype.ISO;
+            else if (Arrays.asList(ignoreExtensions).contains(extension)) return Filetype.OTHER;
+            else return Filetype.UNKNOWN;
 
 
-        }
-
-
-        return Filetype.UNKNOWN;
     }
 
 

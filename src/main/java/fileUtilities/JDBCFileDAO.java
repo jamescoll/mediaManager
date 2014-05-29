@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -12,12 +13,18 @@ import java.util.logging.Logger;
  */
 public class JDBCFileDAO implements FileDAO {
 
-    private final static Logger LOGGER = Logger.getLogger(JDBCFileDAO.class.getName());
-    Properties prop;
-    private Connection conn = null;
 
+    //todo these methods don't already check to see if a record is in the table
+    //this should be addressed
+
+    private final static Logger LOGGER = Logger.getLogger(JDBCFileDAO.class.getName());
+
+    private Properties prop;
+
+    private Connection conn = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
+
     private String databaseUrl;
 
     public JDBCFileDAO() {
@@ -59,7 +66,45 @@ public class JDBCFileDAO implements FileDAO {
     @Override
     public void insertFile(File file) {
 
-        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath, Fileextension) VALUES (?, ?, ?, ?)";
+
+        if (!fileInTable(file)) {
+
+            try {
+
+                conn = DriverManager.getConnection(databaseUrl, prop);
+
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, file.getType().ordinal());
+                preparedStatement.setString(2, file.getName());
+                preparedStatement.setString(3, file.getPath());
+                preparedStatement.setString(4, file.getExtension());
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+
+
+            } catch (Exception e) {
+
+                throw new RuntimeException(e);
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+
+        } else {
+            LOGGER.warning(file.getName() + " already exists in table");
+        }
+
+    }
+
+    @Override
+    public void deleteFile(File file) {
+
+        String sql = "DELETE FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ?";
 
 
         try {
@@ -70,11 +115,43 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setInt(1, file.getType().ordinal());
             preparedStatement.setString(2, file.getName());
             preparedStatement.setString(3, file.getPath());
+            preparedStatement.setString(4, file.getExtension());
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
 
         } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void deleteFileById(int id) {
+
+        String sql = "DELETE FROM FILES WHERE id = ?";
+
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+
+        } catch (Exception e) {
+
             throw new RuntimeException(e);
         } finally {
             if (conn != null) {
@@ -108,6 +185,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
             }
 
 
@@ -128,6 +206,163 @@ public class JDBCFileDAO implements FileDAO {
 
     }
 
+    @Override
+    public ArrayList<File> findByFilename(String fileName) {
+        String sql = "SELECT * FROM FILES WHERE Filename = ?";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, fileName);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+    @Override
+    public ArrayList<File> findByFiletype(Filetype fileType) {
+        String sql = "SELECT * FROM FILES WHERE Filetype = ?";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, fileType.ordinal());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+    @Override
+    public ArrayList<File> findByExtension(String extension) {
+        String sql = "SELECT * FROM FILES WHERE Fileextension = ?";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, extension);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+    @Override
+    public boolean fileInTable(File file) {
+
+
+        String sql = "SELECT * FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ?";
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, file.getType().ordinal());
+            preparedStatement.setString(2, file.getName());
+            preparedStatement.setString(3, file.getPath());
+            preparedStatement.setString(4, file.getExtension());
+            resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.isBeforeFirst()) {
+                return false;
+            } else return true;
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+    }
+
+
     private Filetype mapIntToFiletype(int filetypeAsInt) {
 
         switch (filetypeAsInt) {
@@ -140,9 +375,11 @@ public class JDBCFileDAO implements FileDAO {
             case 3:
                 return Filetype.SUBTITLE;
             case 4:
-                return Filetype.OTHER;
+                return Filetype.TEXT;
             case 5:
-                return Filetype.UNKNOWN;
+                return Filetype.ISO;
+            case 6:
+                return Filetype.OTHER;
             default:
                 return Filetype.UNKNOWN;
 

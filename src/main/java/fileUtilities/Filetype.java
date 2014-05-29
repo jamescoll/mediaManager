@@ -6,5 +6,6 @@ package fileUtilities;
  * Created by James on 29/05/2014.
  */
 public enum Filetype {
-    AUDIO, VIDEO, IMAGE, SUBTITLE, OTHER, UNKNOWN
+    AUDIO, VIDEO, IMAGE, SUBTITLE, TEXT, ISO, OTHER, UNKNOWN
 }
+

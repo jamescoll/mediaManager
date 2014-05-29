@@ -13,6 +13,18 @@ public class File {
     private int id;
     private String name;
     private String path;
+    private String extension;
+
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+
 
 
     public Filetype getType() {
@@ -24,7 +36,7 @@ public class File {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {

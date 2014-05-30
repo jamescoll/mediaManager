@@ -1,7 +1,7 @@
 package fileUtilities;
 
 
-import wikiUtilities.WikiScanner;
+import mediaUtilities.MovieScanner;
 
 /**
  * Created by James on 28/05/2014.
@@ -23,7 +23,8 @@ public class test {
         FileSystemScanner sfs = new FileSystemScanner();
 
 
-       /* JDBCFileDAO jd = new JDBCFileDAO();
+        JDBCFileDAO jd = new JDBCFileDAO();
+        /*
         // jd.deleteFileById(8014);
 
 
@@ -49,14 +50,17 @@ public class test {
 
         jd.insertFile(file);*/
 
-        WikiScanner wScanner = new WikiScanner();
+        // File file = jd.findByFileId(28690);
 
-        String movie = "The General";
-        int year = 1998;
+        //WikiScanner wScanner = new WikiScanner();
 
-        wScanner.doWikiLookup(movie);
-        wScanner.doWikiLookupMediumForm(movie);
-        wScanner.doWikiLookupLongForm(movie, year);
+        MovieScanner mScanner = new MovieScanner();
+
+        mScanner.processMovies();
+
+        // wScanner.doWikiLookup(movie);
+        // wScanner.doWikiLookupMediumForm(movie);
+        // wScanner.doWikiLookupLongForm(movie, year);
 
 
 

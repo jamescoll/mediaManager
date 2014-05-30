@@ -33,5 +33,8 @@ public interface FileDAO {
     //this method checks if a file is already in the table
     public boolean fileInTable(File file);
 
+    //this method selects all movies into an arraylist for processing
+    public ArrayList<File> selectAllMovies();
+
 
 }

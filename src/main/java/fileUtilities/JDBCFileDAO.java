@@ -247,6 +247,47 @@ public class JDBCFileDAO implements FileDAO {
     }
 
     @Override
+    public ArrayList<File> selectAllMovies() {
+        String sql = "SELECT * FROM FILES WHERE Filetype = 1";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+
+    @Override
     public ArrayList<File> findByFiletype(Filetype fileType) {
         String sql = "SELECT * FROM FILES WHERE Filetype = ?";
 

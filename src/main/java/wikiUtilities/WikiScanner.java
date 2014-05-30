@@ -6,6 +6,14 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 
 
+/*todo When link is wrong either:
+        i) we get a null pointer exception from a wrong url (perhaps we can use urlValidator for this)
+        https://stackoverflow.com/questions/2230676/how-to-check-for-a-valid-url-in-java
+        ii) we get a disambiguation page "This disambiguation page ... " etc... in first <p>
+        iii) we get a page relating to a novel or other related media (it may be difficult to disentangle right from wrong here... a keyword based approach will be needed)
+        Thoughts: run should start with long url and move back to short one... testing for a valid hit each time using keyword look up
+        When we are learning about the "right" answers we need to find - common words that occur in the correct hits (using, say, 100 of them) AND words that don't occur in wrong hits.*/
+
 public class WikiScanner {
 
 
@@ -223,7 +231,7 @@ public class WikiScanner {
     //todo this function will need to do a lot more than this very soon - see above comment
 
     private String convertNameToWikiFriendly(String movieName) {
-        movieName = movieName.substring(1);
+
         movieName = movieName.replaceAll(" ", "_");
         movieName = movieName.replaceAll("_The_", "_the_");
         movieName = movieName.replaceAll("_Of_", "_of_");

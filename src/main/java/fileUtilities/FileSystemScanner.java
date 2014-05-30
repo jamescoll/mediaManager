@@ -19,14 +19,11 @@ import java.util.logging.Logger;
  */
 public class FileSystemScanner {
 
-    //todo the scanner is somehow iterating twice through the filesystem or something else...
-    //which is causing the insertFile method to be called more than necessary
-
 
     private final static Logger LOGGER = Logger.getLogger(FileSystemScanner.class.getName());
 
     JDBCFileDAO jdbc;
-
+    Properties prop;
     private String[] audioExtensions = {"mp3", "ogg", "wma"};
     private String[] videoExtensions = {"Divx", "Xvid", "rmvb", "ogm", "mkv", "MPEG", "avi", "mpg", "asf", "flv", "mp4", "m4v", "wmv", "mdf", "mpeg", "AVI", "webm", "VOB", "divx"};
     private String[] imageExtensions = {"jpg", "jpeg", "gif", "JPG", "png"};
@@ -34,23 +31,22 @@ public class FileSystemScanner {
     private String[] textExtensions = {"pdf", "txt", "rtf", "nfo"};
     private String[] isoExtensions = {"bin", "dmg", "ISO", "img"};
     private String[] ignoreExtensions = {"db", "DS_Store", "ini", "BUP", "IFO", "smi", "mds", "cue", "rar"};
-
     private Path path;
     private int pathLength;
 
     FileSystemScanner() {
 
 
+        prop = new Properties();
         setParameters();
         jdbc = new JDBCFileDAO();
-
-        search();
+        processFiles(path);
 
     }
 
     private void setParameters() {
 
-        Properties prop = new Properties();
+
         InputStream input = null;
 
 
@@ -81,53 +77,36 @@ public class FileSystemScanner {
     }
 
 
-    public void search() {
+    private void processFiles(Path path) {
 
 
-        DirectoryStream<Path> ds = null;
         try {
-            ds = Files.newDirectoryStream(path);
+            DirectoryStream<Path> stream = Files.newDirectoryStream(path);
+            for (Path entry : stream) {
+                if (Files.isDirectory(entry)) {
 
-            for (Path file : ds) {
 
-                listFiles(file);
+                    processFiles(entry);
+
+
+                } else {
+
+                    File tmpFile = new File();
+                    tmpFile.setName(entry.getFileName().toString());
+                    tmpFile.setType(getFileType(entry.getFileName().toString()));
+                    tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
+                    tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
+                    tmpFile.setType(getFileType(tmpFile.getExtension()));
+                    jdbc.insertFile(tmpFile);
+
+
+                }
 
             }
+
 
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        LOGGER.info("File System Scanner search() function called.");
-
-
-    }
-
-    private void listFiles(Path path) throws IOException {
-
-
-        DirectoryStream<Path> stream = Files.newDirectoryStream(path);
-        for (Path entry : stream) {
-            if (Files.isDirectory(entry)) {
-
-
-                listFiles(entry);
-
-
-            } else {
-
-                File tmpFile = new File();
-                tmpFile.setName(entry.getFileName().toString());
-                tmpFile.setType(getFileType(entry.getFileName().toString()));
-                tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
-                tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
-                tmpFile.setType(getFileType(tmpFile.getExtension()));
-                jdbc.insertFile(tmpFile);
-
-
-            }
-
+            LOGGER.warning("Error processing file into database");
         }
 
 

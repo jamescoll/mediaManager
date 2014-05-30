@@ -19,7 +19,7 @@ public class test {
         // }
 
         FileSystemScanner sfs = new FileSystemScanner();
-        sfs.search();
+
 
        /* JDBCFileDAO jd = new JDBCFileDAO();
         // jd.deleteFileById(8014);

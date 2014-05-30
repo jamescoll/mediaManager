@@ -51,7 +51,7 @@ public class test {
 
         WikiScanner wScanner = new WikiScanner();
 
-        String movie = " The General";
+        String movie = "The General";
         int year = 1998;
 
         wScanner.doWikiLookup(movie);

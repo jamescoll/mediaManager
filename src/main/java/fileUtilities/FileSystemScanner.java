@@ -91,12 +91,13 @@ public class FileSystemScanner {
 
                 } else {
 
+
                     File tmpFile = new File();
                     tmpFile.setName(entry.getFileName().toString());
                     tmpFile.setType(getFileType(entry.getFileName().toString()));
                     tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
                     tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
-                    tmpFile.setType(getFileType(tmpFile.getExtension()));
+                    tmpFile.setQuality(getFileQuality(entry.getFileName().toString()));
                     jdbc.insertFile(tmpFile);
 
 
@@ -126,6 +127,23 @@ public class FileSystemScanner {
         }
 
         return extension;
+    }
+
+    private Filequality getFileQuality(String filename) {
+
+        if (filename.toLowerCase().contains(Filequality.SUBPROB.toString().toLowerCase())) {
+            return Filequality.NOSUB;
+        } else if (filename.toLowerCase().contains(Filequality.NOSUB.toString().toLowerCase())) {
+            return Filequality.NOSUB;
+        } else if (filename.toLowerCase().contains(Filequality.DUALAUDIO.toString().toLowerCase())) {
+            return Filequality.DUALAUDIO;
+        } else if (filename.toLowerCase().contains(Filequality.WRONGLANG.toString().toLowerCase())) {
+            return Filequality.WRONGLANG;
+        } else if (filename.toLowerCase().contains(Filequality.LOWQUAL.toString().toLowerCase())) {
+            return Filequality.LOWQUAL;
+        } else return Filequality.NORMAL;
+
+
     }
 
 

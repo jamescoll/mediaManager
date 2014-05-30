@@ -27,7 +27,7 @@ public interface FileDAO {
     //this method allows us to find files by the filename
     public ArrayList<File> findByFiletype(Filetype fileType);
 
-    //this method allows us to find files by the extension
+    //this method allows us to find files by the extension as string
     public ArrayList<File> findByExtension(String extension);
 
     //this method checks if a file is already in the table
@@ -35,6 +35,9 @@ public interface FileDAO {
 
     //this method selects all movies into an arraylist for processing
     public ArrayList<File> selectAllMovies();
+
+    //this method selects all movies by quality
+    public ArrayList<File> findByQuality(Filequality quality);
 
 
 }

@@ -10,6 +10,7 @@ package fileUtilities;
 public class File {
 
     private Filetype type;
+    private Filequality quality;
     private int id;
     private String name;
     private String path;
@@ -23,8 +24,6 @@ public class File {
     public void setExtension(String extension) {
         this.extension = extension;
     }
-
-
 
 
     public Filetype getType() {
@@ -57,6 +56,14 @@ public class File {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Filequality getQuality() {
+        return quality;
+    }
+
+    public void setQuality(Filequality quality) {
+        this.quality = quality;
     }
 
 

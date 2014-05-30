@@ -64,7 +64,7 @@ public class JDBCFileDAO implements FileDAO {
     @Override
     public void insertFile(File file) {
 
-        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath, Fileextension) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath, Fileextension, Filequality) VALUES (?, ?, ?, ?, ?)";
 
         if (!fileInTable(file)) {
 
@@ -77,6 +77,7 @@ public class JDBCFileDAO implements FileDAO {
                 preparedStatement.setString(2, file.getName());
                 preparedStatement.setString(3, file.getPath());
                 preparedStatement.setString(4, file.getExtension());
+                preparedStatement.setInt(5, file.getQuality().ordinal());
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
 
@@ -104,7 +105,7 @@ public class JDBCFileDAO implements FileDAO {
     @Override
     public void deleteFile(File file) {
 
-        String sql = "DELETE FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ?";
+        String sql = "DELETE FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality=?";
 
 
         try {
@@ -116,6 +117,7 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setString(2, file.getName());
             preparedStatement.setString(3, file.getPath());
             preparedStatement.setString(4, file.getExtension());
+            preparedStatement.setInt(5, file.getQuality().ordinal());
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
@@ -186,6 +188,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
             }
 
 
@@ -227,6 +230,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
                 fileArrayList.add(file);
             }
 
@@ -267,6 +271,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
                 fileArrayList.add(file);
             }
 
@@ -308,6 +313,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
                 fileArrayList.add(file);
             }
 
@@ -348,6 +354,48 @@ public class JDBCFileDAO implements FileDAO {
                 file.setName(resultSet.getString("Filename"));
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+    @Override
+    public ArrayList<File> findByQuality(Filequality quality) {
+        String sql = "SELECT * FROM FILES WHERE Filequality = ?";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, quality.ordinal());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
                 fileArrayList.add(file);
             }
 
@@ -371,7 +419,7 @@ public class JDBCFileDAO implements FileDAO {
     public boolean fileInTable(File file) {
 
 
-        String sql = "SELECT * FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ?";
+        String sql = "SELECT * FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality = ?";
 
         try {
 
@@ -382,6 +430,7 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setString(2, file.getName());
             preparedStatement.setString(3, file.getPath());
             preparedStatement.setString(4, file.getExtension());
+            preparedStatement.setInt(5, file.getQuality().ordinal());
             resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.isBeforeFirst()) {
@@ -423,6 +472,27 @@ public class JDBCFileDAO implements FileDAO {
                 return Filetype.OTHER;
             default:
                 return Filetype.UNKNOWN;
+
+        }
+    }
+
+    private Filequality mapIntToFilequality(int filequalityAsInt) {
+
+        switch (filequalityAsInt) {
+            case 0:
+                return Filequality.NORMAL;
+            case 1:
+                return Filequality.SUBPROB;
+            case 2:
+                return Filequality.NOSUB;
+            case 3:
+                return Filequality.DUALAUDIO;
+            case 4:
+                return Filequality.WRONGLANG;
+            case 5:
+                return Filequality.LOWQUAL;
+            default:
+                return Filequality.NORMAL;
 
         }
     }

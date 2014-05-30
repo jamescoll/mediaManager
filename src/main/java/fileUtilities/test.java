@@ -1,7 +1,7 @@
 package fileUtilities;
 
 
-import mediaUtilities.MovieScanner;
+import java.util.ArrayList;
 
 /**
  * Created by James on 28/05/2014.
@@ -20,10 +20,18 @@ public class test {
         //     System.out.println(ext);
         // }
 
+        JDBCFileDAO jd = new JDBCFileDAO();
+
         FileSystemScanner sfs = new FileSystemScanner();
 
+        ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
-        JDBCFileDAO jd = new JDBCFileDAO();
+        for (File file : files) {
+            System.out.println(file.getName());
+        }
+
+
+        //JDBCFileDAO jd = new JDBCFileDAO();
         /*
         // jd.deleteFileById(8014);
 
@@ -54,9 +62,9 @@ public class test {
 
         //WikiScanner wScanner = new WikiScanner();
 
-        MovieScanner mScanner = new MovieScanner();
+        // MovieScanner mScanner = new MovieScanner();
 
-        mScanner.processMovies();
+        //  mScanner.processMovies();
 
         // wScanner.doWikiLookup(movie);
         // wScanner.doWikiLookupMediumForm(movie);

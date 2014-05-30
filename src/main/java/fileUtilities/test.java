@@ -22,9 +22,21 @@ public class test {
 
         JDBCFileDAO jd = new JDBCFileDAO();
 
-        FileSystemScanner sfs = new FileSystemScanner();
+        // FileSystemScanner sfs = new FileSystemScanner();
 
         ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
+
+        /*for (File file : files) {
+            System.out.println(file.getName());
+        }
+
+        files = jd.findByQuality(Filequality.LOWQUAL);
+
+        for (File file : files) {
+            System.out.println(file.getName());
+        }*/
+
+        files = jd.findByQuality(Filequality.SUBPROB);
 
         for (File file : files) {
             System.out.println(file.getName());

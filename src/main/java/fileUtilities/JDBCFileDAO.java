@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+
+//todo fix bug in inserting SUBPROB and NOSUB
+
 /**
  * Created by James on 29/05/2014.
  */

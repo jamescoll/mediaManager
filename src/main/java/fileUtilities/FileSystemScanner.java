@@ -94,7 +94,7 @@ public class FileSystemScanner {
 
                     File tmpFile = new File();
                     tmpFile.setName(entry.getFileName().toString());
-                    tmpFile.setType(getFileType(entry.getFileName().toString()));
+                    tmpFile.setType(getFileType(getFileExtension(entry.getFileName().toString())));
                     tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
                     tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
                     tmpFile.setQuality(getFileQuality(entry.getFileName().toString()));
@@ -129,10 +129,11 @@ public class FileSystemScanner {
         return extension;
     }
 
+
     private Filequality getFileQuality(String filename) {
 
         if (filename.toLowerCase().contains(Filequality.SUBPROB.toString().toLowerCase())) {
-            return Filequality.NOSUB;
+            return Filequality.SUBPROB;
         } else if (filename.toLowerCase().contains(Filequality.NOSUB.toString().toLowerCase())) {
             return Filequality.NOSUB;
         } else if (filename.toLowerCase().contains(Filequality.DUALAUDIO.toString().toLowerCase())) {

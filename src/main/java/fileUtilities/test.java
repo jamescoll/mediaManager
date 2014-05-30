@@ -1,6 +1,9 @@
 package fileUtilities;
 
 
+import mediaUtilities.Movie;
+import mediaUtilities.MovieScanner;
+
 import java.util.ArrayList;
 
 /**
@@ -22,11 +25,16 @@ public class test {
 
         JDBCFileDAO jd = new JDBCFileDAO();
 
-        // FileSystemScanner sfs = new FileSystemScanner();
+        jd.dropFilesTable();
+
+        jd.createFilesTable();
+
+
+        FileSystemScanner sfs = new FileSystemScanner();
 
         ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
-        /*for (File file : files) {
+        for (File file : files) {
             System.out.println(file.getName());
         }
 
@@ -34,7 +42,7 @@ public class test {
 
         for (File file : files) {
             System.out.println(file.getName());
-        }*/
+        }
 
         files = jd.findByQuality(Filequality.SUBPROB);
 
@@ -42,6 +50,15 @@ public class test {
             System.out.println(file.getName());
         }
 
+        MovieScanner mScanner = new MovieScanner();
+
+        mScanner.processMovies();
+
+        ArrayList<Movie> movies = mScanner.getMoviesArrayList();
+
+        for (Movie m : movies) {
+            System.out.println(m.getDisplayName());
+        }
 
         //JDBCFileDAO jd = new JDBCFileDAO();
         /*

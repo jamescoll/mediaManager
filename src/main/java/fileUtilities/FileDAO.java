@@ -39,5 +39,10 @@ public interface FileDAO {
     //this method selects all movies by quality
     public ArrayList<File> findByQuality(Filequality quality);
 
+    //this method deletes the files table - use with care
+    public void dropFilesTable();
+
+    //this method creates the files table - use with care
+    public void createFilesTable();
 
 }

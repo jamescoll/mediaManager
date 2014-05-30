@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 //todo fix bug in inserting SUBPROB and NOSUB
 
+//todo add correct SQLException handling
+
 /**
  * Created by James on 29/05/2014.
  */
@@ -137,6 +139,67 @@ public class JDBCFileDAO implements FileDAO {
             }
         }
 
+    }
+
+    @Override
+    public void dropFilesTable() {
+        String sql = "DROP TABLE FILES";
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+    }
+
+    public void createFilesTable() {
+        String sql = "CREATE TABLE `files` (\n" +
+                "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+                "  `Filetype` int(11) NOT NULL,\n" +
+                "  `Filequality` int(11) NOT NULL,\n" +
+                "  `Filepath` varchar(400) NOT NULL,\n" +
+                "  `Filename` varchar(300) NOT NULL,\n" +
+                "  `Fileextension` varchar(10) NOT NULL,\n" +
+                "  PRIMARY KEY (`id`)\n" +
+                ") ENGINE=InnoDB AUTO_INCREMENT=28684 DEFAULT CHARSET=utf8";
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
     @Override

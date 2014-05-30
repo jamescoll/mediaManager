@@ -1,6 +1,8 @@
 package fileUtilities;
 
 
+import wikiUtilities.WikiScanner;
+
 /**
  * Created by James on 28/05/2014.
  */
@@ -46,6 +48,15 @@ public class test {
         File file = jd.findByFileId(10000);
 
         jd.insertFile(file);*/
+
+        WikiScanner wScanner = new WikiScanner();
+
+        String movie = " The General";
+        int year = 1998;
+
+        wScanner.doWikiLookup(movie);
+        wScanner.doWikiLookupMediumForm(movie);
+        wScanner.doWikiLookupLongForm(movie, year);
 
 
 

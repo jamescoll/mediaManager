@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 //todo add check if already exists to create table method
 
 /**
+ * This is the JDBCFileDAO class for handling operations on the File table
+ *
  * Created by James on 29/05/2014.
  */
 public class JDBCFileDAO implements FileDAO {

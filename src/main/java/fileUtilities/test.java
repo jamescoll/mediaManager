@@ -5,6 +5,8 @@ import mediaUtilities.Movie;
 import mediaUtilities.MovieScanner;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -26,14 +28,14 @@ public class test {
         //     System.out.println(ext);
         // }
 
-        JDBCFileDAO jd = new JDBCFileDAO();
+        //JDBCFileDAO jd = new JDBCFileDAO();
 
         // jd.dropFilesTable();
 
         // jd.createFilesTable();
 
 
-        FileSystemScanner sfs = new FileSystemScanner();
+        // FileSystemScanner sfs = new FileSystemScanner();
 
        /* ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
@@ -55,13 +57,31 @@ public class test {
 
         MovieScanner mScanner = new MovieScanner();
 
+
         mScanner.processMovies();
 
         ArrayList<Movie> movies = mScanner.getMoviesArrayList();
 
-        for (Movie m : movies) {
-            System.out.println(m.getDisplayName() + " *** " + m.getYear());
+       /*for (Movie m : movies) {
+          System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
+       }*/
+
+        //todo...hashmap works... let's figure out this approach and use it
+        Iterator it = mScanner.uniqueNames.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry) it.next();
+            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
         }
+
+        // System.out.println("Number of movies is " + movies.size());
+
+       /* System.out.println(movies.get(12).getDisplayName());
+        System.out.println(movies.get(12).getYear());
+        System.out.println(movies.get(13).getDisplayName());
+        System.out.println(movies.get(13).getYear());
+
+        System.out.println(movies.get(12).getDisplayName().trim() == "The Vampires - Les Vampires");*/
 
         //JDBCFileDAO jd = new JDBCFileDAO();
         /*

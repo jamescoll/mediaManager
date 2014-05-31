@@ -6,6 +6,7 @@ import fileUtilities.JDBCFileDAO;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -20,20 +21,24 @@ import java.util.HashSet;
 //todo establish a linking relationship by id with the movie on the file table there needs to be some kind of UID
 //so relationships can be created
 
+//todo check duplicates isn't working as there are still many duplicates appearing on the list ... a better approach might
+//be to use a key value pair for the year and the movie
+
 public class MovieScanner {
 
+    public HashMap<String, Integer> uniqueNames;
     private JDBCFileDAO jdbcFileDAO;
     private ArrayList<File> filesArrayList;
     private ArrayList<Movie> moviesArrayList;
-
     private String[] removeWords = {
-            "SUBPROB", "NOSUB", "DUALAUDIO", "WRONGLANG", "LOWQUAL", "Part1", "Part2", "Part3", "Part4", "Part5", "Part6", "Part7",
+            "Part10", "SUBPROB", "NOSUB", "DUALAUDIO", "WRONGLANG", "LOWQUAL", "Part1", "Part2", "Part3", "Part4", "Part5", "Part6", "Part7",
             "Part8", "Part9", "Part10", "Part11", "Part12", "Part13", "Part14", "Part15", "Part16", "CD1", "CD2",
             "P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08", "P09", "P10", "Parte 1", "Parte 2", "Parte 3", "Parte 4", "Parte 5", "Part 1", "Part 2"
     };
 
     public MovieScanner() {
         jdbcFileDAO = new JDBCFileDAO();
+        uniqueNames = new HashMap<String, Integer>();
         moviesArrayList = new ArrayList<Movie>();
 
     }
@@ -72,6 +77,14 @@ public class MovieScanner {
             currentMovie.setYear(year);
             currentMovie.setDisplayName(movieName);
 
+
+            //this is a test
+
+            //todo this approach mostly works...look further into it and check for edge cases
+
+            uniqueNames.put(currentMovie.getDisplayName(), currentMovie.getYear());
+
+
             //use a hashset to eliminate duplicates
             checkDuplicates();
 
@@ -86,6 +99,7 @@ public class MovieScanner {
     }
 
     private void checkDuplicates() {
+
 
         HashSet<Movie> hs = new HashSet<Movie>();
         hs.addAll(moviesArrayList);
@@ -107,6 +121,7 @@ public class MovieScanner {
             movieName = movieName.trim();
 
         }
+
         return movieName;
     }
 

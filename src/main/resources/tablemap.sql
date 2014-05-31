@@ -7,3 +7,10 @@ CREATE TABLE `files` (
   `Fileextension` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28684 DEFAULT CHARSET=utf8
+
+CREATE TABLE `movies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Movieyear` int(11) NOT NULL,
+  `Moviedisplayname` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28684 DEFAULT CHARSET=utf8

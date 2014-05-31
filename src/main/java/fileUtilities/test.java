@@ -1,12 +1,16 @@
 package fileUtilities;
 
 
+import mediaUtilities.JDBCMovieDAO;
 import mediaUtilities.Movie;
 import mediaUtilities.MovieScanner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+
+//todo add folderId or similar id to the movie and to the file fields which will allow for easy fetching of files related to a movie
+//consider the case for multipart media like berlin alexanderplatz etc...
 
 /**
  *
@@ -28,14 +32,20 @@ public class test {
         //     System.out.println(ext);
         // }
 
-        //JDBCFileDAO jd = new JDBCFileDAO();
+        JDBCFileDAO jd = new JDBCFileDAO();
 
-        // jd.dropFilesTable();
+        jd.dropFilesTable();
 
-        // jd.createFilesTable();
+        jd.createFilesTable();
+
+        JDBCMovieDAO md = new JDBCMovieDAO();
+
+        md.dropMoviesTable();
+
+        md.createMoviesTable();
 
 
-        // FileSystemScanner sfs = new FileSystemScanner();
+        FileSystemScanner sfs = new FileSystemScanner();
 
        /* ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
@@ -60,19 +70,33 @@ public class test {
 
         mScanner.processMovies();
 
-        ArrayList<Movie> movies = mScanner.getMoviesArrayList();
+        ArrayList<Movie> movies = new ArrayList<Movie>();
 
-       /*for (Movie m : movies) {
-          System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
-       }*/
+        //for (Movie m : movies) {
+        //  System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
+        // }
 
         //todo...hashmap works... let's figure out this approach and use it
         Iterator it = mScanner.uniqueNames.entrySet().iterator();
         while (it.hasNext()) {
+
             Map.Entry pairs = (Map.Entry) it.next();
-            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            // System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            int year = Integer.parseInt(pairs.getValue().toString());
+            String movieName = pairs.getKey().toString();
+            Movie m = new Movie(year, movieName);
+            movies.add(m);
+            md.insertBasicMovie(m);
             it.remove(); // avoids a ConcurrentModificationException
         }
+
+
+        for (Movie m : movies) {
+            System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
+        }
+
+        // System.out.println();
+        //  System.out.println(mScanner.removeWords("Berlin Alexanderplatz - Part10.avi"));
 
         // System.out.println("Number of movies is " + movies.size());
 

@@ -5,24 +5,23 @@ import fileUtilities.File;
 import fileUtilities.JDBCFileDAO;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
- *
  * The movie scanner will populate the movie database table with the display name of each movie. In later versions
  * there will need to be a unique id for each unique movie and other information which will be provided by the lookup.
  * It will be useful to also read in other relevant data (year, for example) while doing this lookup.
- *
+ * <p/>
  * Created by jcoll on 30/05/2014.
  */
 
 //todo establish a linking relationship by id with the movie on the file table there needs to be some kind of UID
-//so relationships can be created
+//so relationships can be created - this will be done using the filepath
 
 //todo check duplicates isn't working as there are still many duplicates appearing on the list ... a better approach might
 //be to use a key value pair for the year and the movie
+
+//look at Berlin Alexanderplatz to work out why it's still not working 100% of the time
 
 public class MovieScanner {
 
@@ -30,9 +29,11 @@ public class MovieScanner {
     private JDBCFileDAO jdbcFileDAO;
     private ArrayList<File> filesArrayList;
     private ArrayList<Movie> moviesArrayList;
+    //this is trickier than it looks because some words are subsets of each other Part1 if removed from Part10 will leave a trailing 0
+    //using correct order in this list is important
     private String[] removeWords = {
-            "Part10", "SUBPROB", "NOSUB", "DUALAUDIO", "WRONGLANG", "LOWQUAL", "Part1", "Part2", "Part3", "Part4", "Part5", "Part6", "Part7",
-            "Part8", "Part9", "Part10", "Part11", "Part12", "Part13", "Part14", "Part15", "Part16", "CD1", "CD2",
+            "SUBPROB", "NOSUB", "DUALAUDIO", "WRONGLANG", "LOWQUAL", "Part10", "Part11", "Part12", "Part13", "Part14", "Part15", "Part16",
+            "Part1", "Part2", "Part3", "Part4", "Part5", "Part6", "Part7", "Part8", "Part9", "Part10", "CD1", "CD2",
             "P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08", "P09", "P10", "Parte 1", "Parte 2", "Parte 3", "Parte 4", "Parte 5", "Part 1", "Part 2"
     };
 
@@ -42,7 +43,6 @@ public class MovieScanner {
         moviesArrayList = new ArrayList<Movie>();
 
     }
-
 
 
     public void processMovies() {
@@ -80,17 +80,12 @@ public class MovieScanner {
 
             //this is a test
 
-            //todo this approach mostly works...look further into it and check for edge cases
+            //todo this approach works...look further into it and check for edge cases
 
             uniqueNames.put(currentMovie.getDisplayName(), currentMovie.getYear());
 
 
-            //use a hashset to eliminate duplicates
-            checkDuplicates();
-
             moviesArrayList.add(currentMovie);
-
-
 
 
         }
@@ -98,17 +93,8 @@ public class MovieScanner {
 
     }
 
-    private void checkDuplicates() {
 
-
-        HashSet<Movie> hs = new HashSet<Movie>();
-        hs.addAll(moviesArrayList);
-        moviesArrayList.clear();
-        moviesArrayList.addAll(hs);
-        Collections.sort(moviesArrayList);
-    }
-
-    private String removeWords(String movieName) {
+    public String removeWords(String movieName) {
 
         for (String word : removeWords) {
 

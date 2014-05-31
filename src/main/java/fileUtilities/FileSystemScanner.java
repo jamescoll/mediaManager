@@ -33,6 +33,7 @@ public class FileSystemScanner {
     private String[] ignoreExtensions = {"db", "DS_Store", "ini", "BUP", "IFO", "smi", "mds", "cue", "rar"};
     private Path path;
     private int pathLength;
+    private int folderId;
 
     FileSystemScanner() {
 
@@ -62,6 +63,8 @@ public class FileSystemScanner {
 
             pathLength = path.toAbsolutePath().toString().length();
 
+            folderId = 10000;
+
         } catch (IOException e) {
             LOGGER.warning("IO Exception occurred");
 
@@ -87,11 +90,12 @@ public class FileSystemScanner {
 
 
                     processFiles(entry);
+                    folderId++;
 
 
                 } else {
 
-
+                    System.out.println("folderId:" + folderId + " " + entry.getFileName().toString());
                     File tmpFile = new File();
                     tmpFile.setName(entry.getFileName().toString());
                     tmpFile.setType(getFileType(getFileExtension(entry.getFileName().toString())));

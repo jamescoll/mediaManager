@@ -10,7 +10,7 @@ package mediaUtilities;
  *
  * Created by jcoll on 30/05/2014.
  */
-public class Movie {
+public class Movie implements Comparable<Movie> {
 
 
     private String displayName;
@@ -22,10 +22,7 @@ public class Movie {
 
     }
 
-    public Movie(String displayName) {
 
-        this.displayName = displayName;
-    }
 
     public String getDisplayName() {
         return displayName;
@@ -60,4 +57,9 @@ public class Movie {
     }
 
 
+    @Override
+    public int compareTo(Movie m) {
+        int compareYear = m.getYear();
+        return this.year - compareYear;
+    }
 }

@@ -7,6 +7,9 @@ import mediaUtilities.MovieScanner;
 import java.util.ArrayList;
 
 /**
+ *
+ * This is a dummy test class for trying out various things. This will eventually be replaced with a spring or similar loader
+ *
  * Created by James on 28/05/2014.
  */
 
@@ -30,9 +33,9 @@ public class test {
         jd.createFilesTable();
 
 
-        FileSystemScanner sfs = new FileSystemScanner();
+        //FileSystemScanner sfs = new FileSystemScanner();
 
-        ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
+       /* ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
         for (File file : files) {
             System.out.println(file.getName());
@@ -48,7 +51,7 @@ public class test {
 
         for (File file : files) {
             System.out.println(file.getName());
-        }
+        }*/
 
         MovieScanner mScanner = new MovieScanner();
 
@@ -57,7 +60,7 @@ public class test {
         ArrayList<Movie> movies = mScanner.getMoviesArrayList();
 
         for (Movie m : movies) {
-            System.out.println(m.getDisplayName());
+            System.out.println(m.getDisplayName() + " *** " + m.getYear());
         }
 
         //JDBCFileDAO jd = new JDBCFileDAO();

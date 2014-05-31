@@ -28,12 +28,12 @@ public class test {
 
         JDBCFileDAO jd = new JDBCFileDAO();
 
-        jd.dropFilesTable();
+        // jd.dropFilesTable();
 
-        jd.createFilesTable();
+        // jd.createFilesTable();
 
 
-        //FileSystemScanner sfs = new FileSystemScanner();
+        FileSystemScanner sfs = new FileSystemScanner();
 
        /* ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 

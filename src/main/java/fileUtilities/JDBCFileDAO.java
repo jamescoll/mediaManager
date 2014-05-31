@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 //todo add correct SQLException handling
 
+//todo add check if already exists to create table method
+
 /**
  * Created by James on 29/05/2014.
  */

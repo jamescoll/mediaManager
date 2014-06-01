@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -260,5 +261,83 @@ public class JDBCMovieDAO implements MovieDAO {
         }
 
         return movie;
+    }
+
+    @Override
+    public ArrayList<Movie> selectAllMovies() {
+        String sql = "SELECT * FROM MOVIES";
+
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Movie movie = new Movie();
+                movie.setMovieId(resultSet.getInt("id"));
+                movie.setDisplayName(resultSet.getString("Moviedisplayname"));
+                movie.setYear(resultSet.getInt("Movieyear"));
+                movie.setFilesId(resultSet.getInt("Moviefilesid"));
+                movies.add(movie);
+            }
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return movies;
+    }
+
+    @Override
+    public ArrayList<Movie> selectAllMoviesSortedByYear() {
+        String sql = "SELECT * FROM MOVIES ORDER BY Movieyear";
+
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Movie movie = new Movie();
+                movie.setMovieId(resultSet.getInt("id"));
+                movie.setDisplayName(resultSet.getString("Moviedisplayname"));
+                movie.setYear(resultSet.getInt("Movieyear"));
+                movie.setFilesId(resultSet.getInt("Moviefilesid"));
+                movies.add(movie);
+            }
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return movies;
     }
 }

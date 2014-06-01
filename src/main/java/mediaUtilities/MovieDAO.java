@@ -1,5 +1,7 @@
 package mediaUtilities;
 
+import java.util.ArrayList;
+
 /**
  * Created by jcoll on 30/05/2014.
  */
@@ -19,6 +21,12 @@ public interface MovieDAO {
 
     //this method allows us to select a given movie by id
     public Movie selectMovie(int movieId);
+
+    //this method allows us to select all movies
+    public ArrayList<Movie> selectAllMovies();
+
+    //this method allows us to select them sorted by year
+    public ArrayList<Movie> selectAllMoviesSortedByYear();
 
 
 }

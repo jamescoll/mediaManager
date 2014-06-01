@@ -2,10 +2,7 @@ package fileUtilities;
 
 
 import mediaUtilities.JDBCMovieDAO;
-import mediaUtilities.Movie;
 import mediaUtilities.MovieScanner;
-
-import java.util.ArrayList;
 
 //todo add folderId or similar id to the movie and to the file fields which will allow for easy fetching of files related to a movie
 //consider the case for multipart media like berlin alexanderplatz etc...
@@ -29,6 +26,10 @@ public class test {
         // for (String ext : exts) {
         //     System.out.println(ext);
         // }
+
+        //todo multi parts are still tricky
+        //a convention in which a separate movie gets a separate folder (e.g. Star Wars and Godfather) would be better
+        //see also French Connection
 
         JDBCFileDAO jd = new JDBCFileDAO();
 
@@ -75,13 +76,16 @@ public class test {
         mScanner.processMovies();
 
 
-        Movie m = md.selectMovie(28684);
+        //Movie m = md.selectMovie(28684);
 
-        ArrayList<File> files = jd.selectAssociatedFiles(m);
+        //ArrayList<File> files = jd.selectAssociatedFiles(m);
 
-        for (File f : files) {
-            System.out.println(f.getName() + " " + f.getMovieId() + " " + f.getType() + " " + f.getExtension());
-        }
+        //for (File f : files) {
+        //  System.out.println(f.getName() + " " + f.getMovieId() + " " + f.getType() + " " + f.getExtension());
+        //}
+
+
+
         //for (Movie m : movies) {
         //  System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
         // }

@@ -13,16 +13,16 @@ package mediaUtilities;
 public class Movie {
 
 
+    private int movieId;
     private String displayName;
-    private String englishName;
-    private String foreignName;
     private int year;
+    private int filesId;
 
     public Movie() {
 
     }
 
-    public Movie(int year, String displayName) {
+    public Movie(int year, String displayName, int movieId) {
         this.year = year;
         this.displayName = displayName;
     }
@@ -36,28 +36,28 @@ public class Movie {
         this.displayName = displayName;
     }
 
-    public String getForeignName() {
-        return foreignName;
-    }
-
-    public void setForeignName(String foreignName) {
-        this.foreignName = foreignName;
-    }
-
-    public String getEnglishName() {
-        return englishName;
-    }
-
-    public void setEnglishName(String name) {
-        this.englishName = englishName;
-    }
-
     public int getYear() {
         return year;
     }
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+
+    public int getFilesId() {
+        return filesId;
+    }
+
+    public void setFilesId(int filesId) {
+        this.filesId = filesId;
     }
 
 

@@ -17,6 +17,8 @@ public class File {
     private String extension;
 
 
+    private int movieId;
+
     public String getExtension() {
         return extension;
     }
@@ -64,6 +66,14 @@ public class File {
 
     public void setQuality(Filequality quality) {
         this.quality = quality;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
 

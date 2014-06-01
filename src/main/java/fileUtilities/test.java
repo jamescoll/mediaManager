@@ -6,8 +6,6 @@ import mediaUtilities.Movie;
 import mediaUtilities.MovieScanner;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 
 //todo add folderId or similar id to the movie and to the file fields which will allow for easy fetching of files related to a movie
 //consider the case for multipart media like berlin alexanderplatz etc...
@@ -47,6 +45,12 @@ public class test {
 
         FileSystemScanner sfs = new FileSystemScanner();
 
+       /* ArrayList<File> files = jd.selectAllFiles();
+
+        for(File file: files) {
+            System.out.println(file.getName() + " " + file.getMovieId() + " " + file.getType());
+        }*/
+
        /* ArrayList<File> files = jd.findByQuality(Filequality.DUALAUDIO);
 
         for (File file : files) {
@@ -70,14 +74,20 @@ public class test {
 
         mScanner.processMovies();
 
-        ArrayList<Movie> movies = new ArrayList<Movie>();
 
+        Movie m = md.selectMovie(28684);
+
+        ArrayList<File> files = jd.selectAssociatedFiles(m);
+
+        for (File f : files) {
+            System.out.println(f.getName() + " " + f.getMovieId() + " " + f.getType() + " " + f.getExtension());
+        }
         //for (Movie m : movies) {
         //  System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
         // }
 
         //todo...hashmap works... let's figure out this approach and use it
-        Iterator it = mScanner.uniqueNames.entrySet().iterator();
+       /* Iterator it = mScanner.uniqueNames.entrySet().iterator();
         while (it.hasNext()) {
 
             Map.Entry pairs = (Map.Entry) it.next();
@@ -88,12 +98,12 @@ public class test {
             movies.add(m);
             md.insertBasicMovie(m);
             it.remove(); // avoids a ConcurrentModificationException
-        }
+        }*/
 
 
-        for (Movie m : movies) {
+        /*for (Movie m : movies) {
             System.out.println("[" + m.getYear() + "] " + m.getDisplayName());
-        }
+        }*/
 
         // System.out.println();
         //  System.out.println(mScanner.removeWords("Berlin Alexanderplatz - Part10.avi"));

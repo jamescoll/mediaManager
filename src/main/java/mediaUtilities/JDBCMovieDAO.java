@@ -61,7 +61,7 @@ public class JDBCMovieDAO implements MovieDAO {
     @Override
     public void insertBasicMovie(Movie movie) {
 
-        String sql = "INSERT INTO MOVIES (Movieyear, Moviedisplayname) VALUES (?, ?)";
+        String sql = "INSERT INTO MOVIES (Movieyear, Moviedisplayname, Moviefilesid) VALUES (?, ?, ?)";
 
         if (!movieInTable(movie)) {
 
@@ -72,7 +72,7 @@ public class JDBCMovieDAO implements MovieDAO {
                 preparedStatement = conn.prepareStatement(sql);
                 preparedStatement.setInt(1, movie.getYear());
                 preparedStatement.setString(2, movie.getDisplayName());
-
+                preparedStatement.setInt(3, movie.getFilesId());
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
 
@@ -197,6 +197,7 @@ public class JDBCMovieDAO implements MovieDAO {
                 "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
                 "  `Moviedisplayname` varchar(300) NOT NULL,\n" +
                 "  `Movieyear` int(11) NOT NULL,\n" +
+                "  `Moviefilesid` int(11) NOT NULL,\n" +
                 "  PRIMARY KEY (`id`)\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=28684 DEFAULT CHARSET=utf8";
 
@@ -220,5 +221,44 @@ public class JDBCMovieDAO implements MovieDAO {
                 }
             }
         }
+    }
+
+    @Override
+    public Movie selectMovie(int movieId) {
+        String sql = "SELECT * FROM MOVIES WHERE id = ?";
+
+        Movie movie = new Movie();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, movieId);
+
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                movie.setMovieId(resultSet.getInt("id"));
+                movie.setDisplayName(resultSet.getString("Moviedisplayname"));
+                movie.setYear(resultSet.getInt("Movieyear"));
+                movie.setFilesId(resultSet.getInt("Moviefilesid"));
+            }
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return movie;
     }
 }

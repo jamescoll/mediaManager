@@ -1,5 +1,7 @@
 package fileUtilities;
 
+import mediaUtilities.Movie;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,7 +75,7 @@ public class JDBCFileDAO implements FileDAO {
     @Override
     public void insertFile(File file) {
 
-        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath, Fileextension, Filequality) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO FILES (Filetype, Filename, Filepath, Fileextension, Filequality, Filemovieid) VALUES (?, ?, ?, ?, ?, ?)";
 
         if (!fileInTable(file)) {
 
@@ -87,6 +89,7 @@ public class JDBCFileDAO implements FileDAO {
                 preparedStatement.setString(3, file.getPath());
                 preparedStatement.setString(4, file.getExtension());
                 preparedStatement.setInt(5, file.getQuality().ordinal());
+                preparedStatement.setInt(6, file.getMovieId());
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
 
@@ -114,7 +117,7 @@ public class JDBCFileDAO implements FileDAO {
     @Override
     public void deleteFile(File file) {
 
-        String sql = "DELETE FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality=?";
+        String sql = "DELETE FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality=? AND Filemovieid = ?";
 
 
         try {
@@ -127,6 +130,7 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setString(3, file.getPath());
             preparedStatement.setString(4, file.getExtension());
             preparedStatement.setInt(5, file.getQuality().ordinal());
+            preparedStatement.setInt(6, file.getMovieId());
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
@@ -181,6 +185,7 @@ public class JDBCFileDAO implements FileDAO {
                 "  `Filepath` varchar(400) NOT NULL,\n" +
                 "  `Filename` varchar(300) NOT NULL,\n" +
                 "  `Fileextension` varchar(10) NOT NULL,\n" +
+                "  `Filemovieid` int(11) NOT NULL,\n" +
                 "  PRIMARY KEY (`id`)\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=28684 DEFAULT CHARSET=utf8";
 
@@ -204,6 +209,48 @@ public class JDBCFileDAO implements FileDAO {
                 }
             }
         }
+    }
+
+    @Override
+    public ArrayList<File> selectAssociatedFiles(Movie m) {
+        String sql = "SELECT * FROM FILES WHERE Filemovieid = ?";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, m.getFilesId());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
     }
 
     @Override
@@ -259,6 +306,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
             }
 
 
@@ -301,6 +349,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
                 fileArrayList.add(file);
             }
 
@@ -342,6 +391,49 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
+                fileArrayList.add(file);
+            }
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+
+        return fileArrayList;
+    }
+
+    @Override
+    public ArrayList<File> selectAllFiles() {
+        String sql = "SELECT * FROM FILES";
+
+        ArrayList<File> fileArrayList = new ArrayList<File>();
+
+        try {
+
+            conn = DriverManager.getConnection(databaseUrl, prop);
+
+            preparedStatement = conn.prepareStatement(sql);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                File file = new File();
+                file.setId(resultSet.getInt("id"));
+                file.setType(mapIntToFiletype(resultSet.getInt("Filetype")));
+                file.setName(resultSet.getString("Filename"));
+                file.setPath(resultSet.getString("Filepath"));
+                file.setExtension(resultSet.getString("Fileextension"));
+                file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
                 fileArrayList.add(file);
             }
 
@@ -384,6 +476,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
                 fileArrayList.add(file);
             }
 
@@ -425,6 +518,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
                 fileArrayList.add(file);
             }
 
@@ -466,6 +560,7 @@ public class JDBCFileDAO implements FileDAO {
                 file.setPath(resultSet.getString("Filepath"));
                 file.setExtension(resultSet.getString("Fileextension"));
                 file.setQuality(mapIntToFilequality(resultSet.getInt("Filequality")));
+                file.setMovieId(resultSet.getInt("Filemovieid"));
                 fileArrayList.add(file);
             }
 
@@ -489,7 +584,7 @@ public class JDBCFileDAO implements FileDAO {
     public boolean fileInTable(File file) {
 
 
-        String sql = "SELECT * FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality = ?";
+        String sql = "SELECT * FROM FILES WHERE Filetype = ? AND Filename = ? AND Filepath = ? AND Fileextension = ? AND Filequality = ? AND Filemovieid = ?";
 
         try {
 
@@ -501,6 +596,7 @@ public class JDBCFileDAO implements FileDAO {
             preparedStatement.setString(3, file.getPath());
             preparedStatement.setString(4, file.getExtension());
             preparedStatement.setInt(5, file.getQuality().ordinal());
+            preparedStatement.setInt(6, file.getMovieId());
             resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.isBeforeFirst()) {

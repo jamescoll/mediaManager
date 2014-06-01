@@ -16,4 +16,9 @@ public interface MovieDAO {
 
     //this method creates the movies table - use with care
     public void createMoviesTable();
+
+    //this method allows us to select a given movie by id
+    public Movie selectMovie(int movieId);
+
+
 }

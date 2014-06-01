@@ -5,28 +5,22 @@ import fileUtilities.File;
 import fileUtilities.JDBCFileDAO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 
 /**
- * The movie scanner will populate the movie database table with the display name of each movie. In later versions
- * there will need to be a unique id for each unique movie and other information which will be provided by the lookup.
- * It will be useful to also read in other relevant data (year, for example) while doing this lookup.
+ * The movie scanner will populate the movie database table with the display name of each movie and also an id connecting it to related
+ * files. The initial movie object is barebones and will be embellished by information gathered from the web.
  * <p/>
  * Created by jcoll on 30/05/2014.
  */
 
-//todo establish a linking relationship by id with the movie on the file table there needs to be some kind of UID
-//so relationships can be created - this will be done using the filepath
 
-//todo check duplicates isn't working as there are still many duplicates appearing on the list ... a better approach might
-//be to use a key value pair for the year and the movie
-
-//look at Berlin Alexanderplatz to work out why it's still not working 100% of the time
 
 public class MovieScanner {
 
-    public HashMap<String, Integer> uniqueNames;
+    private HashSet<String> uniqueNames;
     private JDBCFileDAO jdbcFileDAO;
+    private JDBCMovieDAO jdbcMovieDAO;
     private ArrayList<File> filesArrayList;
     private ArrayList<Movie> moviesArrayList;
     //this is trickier than it looks because some words are subsets of each other Part1 if removed from Part10 will leave a trailing 0
@@ -39,7 +33,8 @@ public class MovieScanner {
 
     public MovieScanner() {
         jdbcFileDAO = new JDBCFileDAO();
-        uniqueNames = new HashMap<String, Integer>();
+        jdbcMovieDAO = new JDBCMovieDAO();
+        uniqueNames = new HashSet<String>();
         moviesArrayList = new ArrayList<Movie>();
 
     }
@@ -73,23 +68,22 @@ public class MovieScanner {
 
             movieName = movieName.substring(0, lastDot).trim();
 
-            //set up a movie object
-            currentMovie.setYear(year);
-            currentMovie.setDisplayName(movieName);
+            //use our hashset to check if this is a unique film
+            if (uniqueNames.add((movieName))) {
 
-
-            //this is a test
-
-            //todo this approach works...look further into it and check for edge cases
-
-            uniqueNames.put(currentMovie.getDisplayName(), currentMovie.getYear());
-
-
-            moviesArrayList.add(currentMovie);
+                currentMovie.setYear(year);
+                currentMovie.setDisplayName(movieName);
+                currentMovie.setFilesId(file.getMovieId());
+                moviesArrayList.add(currentMovie);
+            }
 
 
         }
 
+        //add movies to db
+        for (Movie m : moviesArrayList) {
+            jdbcMovieDAO.insertBasicMovie(m);
+        }
 
     }
 
@@ -109,10 +103,6 @@ public class MovieScanner {
         }
 
         return movieName;
-    }
-
-    public ArrayList<Movie> getMoviesArrayList() {
-        return moviesArrayList;
     }
 
 

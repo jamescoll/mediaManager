@@ -33,7 +33,11 @@ public class FileSystemScanner {
     private String[] ignoreExtensions = {"db", "DS_Store", "ini", "BUP", "IFO", "smi", "mds", "cue", "rar"};
     private Path path;
     private int pathLength;
+
+    //todo this may fail if the folder.jpg image is in the parent folder of multi-folder folders
+    //this is used to trace which files belong in which folder and will be used to associate files with a given movie
     private int folderId;
+
 
     FileSystemScanner() {
 
@@ -42,6 +46,7 @@ public class FileSystemScanner {
         setParameters();
         jdbc = new JDBCFileDAO();
         processFiles(path);
+
 
     }
 
@@ -89,20 +94,28 @@ public class FileSystemScanner {
                 if (Files.isDirectory(entry)) {
 
 
-                    processFiles(entry);
+                    //todo this fails in the case of multifolder directories (Berlin Alexanderplatz)
+                    //and in folders in which there are multiple but non-related films (Night on Earth)
                     folderId++;
+
+
+                    processFiles(entry);
 
 
                 } else {
 
-                    System.out.println("folderId:" + folderId + " " + entry.getFileName().toString());
+
                     File tmpFile = new File();
                     tmpFile.setName(entry.getFileName().toString());
                     tmpFile.setType(getFileType(getFileExtension(entry.getFileName().toString())));
                     tmpFile.setPath(entry.toAbsolutePath().toString().substring(pathLength + 1));
                     tmpFile.setExtension(getFileExtension(entry.toAbsolutePath().toString()));
                     tmpFile.setQuality(getFileQuality(entry.getFileName().toString()));
-                    jdbc.insertFile(tmpFile);
+                    tmpFile.setMovieId(folderId);
+
+                    if (!((entry.getFileName().toString().equals("Thumbs.db")) || (entry.getFileName().toString().equals(".DS_Store")))) {
+                        jdbc.insertFile(tmpFile);
+                    }
 
 
                 }

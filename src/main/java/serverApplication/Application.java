@@ -1,9 +1,5 @@
 package serverApplication;
 
-import fileUtilities.FileSystemScanner;
-import fileUtilities.JDBCFileDAO;
-import mediaUtilities.JDBCMovieDAO;
-import mediaUtilities.MovieScanner;
 import org.apache.catalina.startup.Tomcat;
 
 import java.io.File;
@@ -19,7 +15,10 @@ public class Application {
         String webappDirLocation = "src/main/resources/";
         Tomcat tomcat = new Tomcat();
 
-        JDBCFileDAO jd = new JDBCFileDAO();
+
+        //this code pwns the database...be careful
+
+/*        JDBCFileDAO jd = new JDBCFileDAO();
 
         jd.dropFilesTable();
 
@@ -42,7 +41,7 @@ public class Application {
         mScanner.processMovies();
 
 
-        System.out.println("Scanned files and movies - launching server");
+        System.out.println("Scanned files and movies - launching server"); */
 
         //The port that we should run on can be set into an environment variable
         //Look for that variable and default to 8080 if it isn't there.

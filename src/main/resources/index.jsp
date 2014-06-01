@@ -15,7 +15,7 @@
     <![endif]-->
 </head>
 <body align="center">
-<h2>The Sorrow and the Pity</h2>
+<h2>The Sorrow and the Pity <%= new java.util.Date() %></h2>
 
 <p>
     <embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org"

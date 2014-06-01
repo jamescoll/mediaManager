@@ -39,7 +39,7 @@ public class FileSystemScanner {
     private int folderId;
 
 
-    FileSystemScanner() {
+    public FileSystemScanner() {
 
 
         prop = new Properties();
